@@ -12,7 +12,7 @@ import _ from "lodash";
 import fpath from "path";
 import mustache from "mustache";
 import models from "../model";
-import BSDiff from 'bsdiff-nodejs';
+// import BSDiff from 'bsdiff-nodejs';
 import {AppError} from "../utils/app-error";
 const log = log4js.getLogger("cps:PackageManager");
 let storageDir = common.getStorageDir()
@@ -268,43 +268,43 @@ export default class VersionManager{
         let diffTmpFile = path.join(workDirectoryPath, originalVersion.versionName + "_" + oldVersion.versionName + "_" + oldVersion._id + ".patch");
         let diffPathKey = originalVersion.downloadPath.substring(0, originalVersion.downloadPath.lastIndexOf('/') + 1) + path.basename(diffTmpFile);
 
-        return BSDiff.diff(oldVersionFile, originalFile, diffTmpFile, (result => {
-            // log.debug('diffFile result', result);
-            if (result != 100) {
+        // return BSDiff.diff(oldVersionFile, originalFile, diffTmpFile, (result => {
+        //     // log.debug('diffFile result', result);
+        //     if (result != 100) {
 
-            } else {
-                return security.fileSha256(diffTmpFile).then((diffHash) =>
-                    common.uploadFileToStorage(diffPathKey, diffTmpFile).then(() => {
-                        let stats = fs.statSync(diffTmpFile);
-                        let downloadUrl = common.getBlobDownloadUrl(diffPathKey);
-                        let label = originalVersion.versionCode + "_" + oldVersion.versionCode;
-                        let patchInfo = {
-                            patchId: label+"_" + oldVersion._id,
-                            label: label,
-                            md5: diffHash,
-                            sMd5: oldVersion.packageHash,
-                            tMd5: originalVersion.packageHash,
-                            size: stats.size,
-                            downloadPath: diffPathKey,
-                            downloadUrl: downloadUrl,
-                            tip: "本次更新大小" + stats.size + "byte",
-                        };
-                        return Models.Version.findById(originalVersion._id).then(
-                            version => {
-                                if (!version.patchList) {
-                                    version.patchList = [];
-                                }
-                                version.patchList.push(patchInfo)
-                                return Models.Version.updateOne({_id: originalVersion._id}, {
-                                        patchList: version.patchList,
-                                    }
-                                );
-                            }
-                        )
-                    })
-                )
-            }
-        }))
+        //     } else {
+        //         return security.fileSha256(diffTmpFile).then((diffHash) =>
+        //             common.uploadFileToStorage(diffPathKey, diffTmpFile).then(() => {
+        //                 let stats = fs.statSync(diffTmpFile);
+        //                 let downloadUrl = common.getBlobDownloadUrl(diffPathKey);
+        //                 let label = originalVersion.versionCode + "_" + oldVersion.versionCode;
+        //                 let patchInfo = {
+        //                     patchId: label+"_" + oldVersion._id,
+        //                     label: label,
+        //                     md5: diffHash,
+        //                     sMd5: oldVersion.packageHash,
+        //                     tMd5: originalVersion.packageHash,
+        //                     size: stats.size,
+        //                     downloadPath: diffPathKey,
+        //                     downloadUrl: downloadUrl,
+        //                     tip: "本次更新大小" + stats.size + "byte",
+        //                 };
+        //                 return Models.Version.findById(originalVersion._id).then(
+        //                     version => {
+        //                         if (!version.patchList) {
+        //                             version.patchList = [];
+        //                         }
+        //                         version.patchList.push(patchInfo)
+        //                         return Models.Version.updateOne({_id: originalVersion._id}, {
+        //                                 patchList: version.patchList,
+        //                             }
+        //                         );
+        //                     }
+        //                 )
+        //             })
+        //         )
+        //     }
+        // }))
     }
 
     static downloadVersionAndExtract(workDirectoryPath,blobUrl,fileName ) {
