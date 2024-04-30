@@ -159,7 +159,9 @@ server{
       try_files $uri $uri/ @router;
       index index.html;
   }
-
+ location @router {
+      rewrite ^.*$ /index.html last;
+  }
   location /api/ {  #把以api打头的接口转发给后端server
     proxy_pass http://127.0.0.1:8085; #这里端口修改为后端服务运行的端口
     proxy_set_header Host $host;
