@@ -1,6 +1,15 @@
 FROM node:14.16.1-alpine AS build
 
-RUN npm config set registry https://registry.npm.taobao.org/
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+RUN apk add --no-cache ca-certificates python3 py3-pip
+RUN apk add --no-cache tzdata \
+    && cp /usr/share/zoneinfo/Asia/Chongqing /etc/localtime \
+    && echo "Asia/Chongqing" > /etc/timezone
+RUN apk add --no-cache make g++
+
+
+
+RUN npm config set registry  https://registry.npmmirror.com
 # 设置目录
 RUN mkdir -p /app/data /app/server /app/client/dist  /app/docker
 
@@ -16,7 +25,6 @@ ADD client/dist /app/client/dist
 WORKDIR /app/server
 ADD server /app/server
 RUN npm install
-
 EXPOSE 8081/tcp
 
 ENTRYPOINT ["/app/docker/docker-entrypoint.sh"]
