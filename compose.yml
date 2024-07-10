@@ -1,0 +1,31 @@
+services:
+  appspace-mongo:
+    container_name: appspace-mongo
+    image: mongo:6.0
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  appspace:
+    container_name: appspace
+    image: appspace
+    restart: always
+    ports:
+      - '8081:8081'
+    environment:
+      APP_SPA_DOMAIN: http://example.com
+      APP_SPA_SECRET: abcdefg 
+      APP_SPA_DBUSER: root
+      APP_SPA_DBPWD: root
+      APP_SPA_DB_NAME: app_space
+      APP_SPA_DB_HOST: appspace-mongo
+      APP_SPA_DB_PORT: 27017
+      APP_SPA_ADMIN_ACCOUNT: admin
+      APP_SPA_ADMIN_PASSWORD: "app@space"
+
+
+# volumes:
+#   dbdata:
