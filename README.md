@@ -80,8 +80,23 @@ npm run start  #本地运行可以使用该命令
 
 4.使用浏览器打开进入http://localhost:8081即可进入应用
 
+# Docker部署
+### 构建镜像
+```
+docker build . -t appspace
+```
 
+### 使用 compose 运行
+```
+# 启动
+docker compose up -d
 
+# 停止
+docker compose stop
+
+# 停止并删除容器(包括数据)
+docker compose down --remove-orphans
+```
 
 ### 项目配置说明
 
